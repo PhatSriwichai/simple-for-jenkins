@@ -1,0 +1,28 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: spring-cloud-config-server
+  namespace: beta-botcatalogs
+  labels:
+    app: spring-cloud-config-server
+spec:
+  revisionHistoryLimit: 0
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spring-cloud-config-server
+  template:
+    metadata:
+      labels:
+        app: spring-cloud-config-server
+    spec:
+      containers:
+      - name: spring-cloud-config-server
+        image: asia.gcr.io/bot-catalogs/central/spring-cloud-config-server:0.1.0-beta
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: Always
+        
+
+
