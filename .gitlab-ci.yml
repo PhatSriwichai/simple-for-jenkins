@@ -1,0 +1,50 @@
+stages:
+- unittest
+- build_image
+- push_image
+- clean_image
+- deploy
+
+unittest:
+  stage: unittest
+  script:
+  - mvn -N io.takari:maven:wrapper
+  - ./mvnw clean test
+
+build_docker_image:
+  stage: build_image
+  script:
+  - "echo $(date +%s) >> g_timestamp"
+  - docker build -t asia.gcr.io/inbound-theory-223505/central/spring-cloud-config-server:`cat g_timestamp` .
+  artifacts:
+    paths:
+    - g_timestamp
+  only:
+  - master
+
+push_docker:
+  stage: push_image
+  script:
+  - gcloud docker -- push asia.gcr.io/inbound-theory-223505/central/spring-cloud-config-server
+  only:
+  - master
+
+clean_image:
+  stage: clean_image
+  script:
+  - docker images | grep asia.gcr.io/inbound-theory-223505/central/spring-cloud-config-server | awk '{ print $3 }' | uniq | awk 'NR > 2 { print }' | xargs -i docker rmi {} -f
+  allow_failure: true
+  only:
+  - master
+
+deploy:
+  stage: deploy
+  script:
+  - export PATH=$PATH:/usr/lib/google-cloud-sdk/bin
+  - echo `pwd`
+  - gcloud container clusters get-credentials fullcowling --zone asia-southeast1-a --project inbound-theory-223505
+  - "sed -i -e \"s/TO_BE_REPLACE_TAG/`cat g_timestamp`/g\" deploy/beta-dep.yml"
+  - kubectl apply -f src/main/deploy/beta-dep.yml
+  - kubectl apply -f src/main/deploy/beta-svc.yml
+  only:
+  - master
