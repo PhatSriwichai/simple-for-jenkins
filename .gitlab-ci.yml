@@ -17,7 +17,7 @@ build_docker_image:
   - mvn -N io.takari:maven:wrapper
   - ./mvnw package
   - "echo $(date +%s) >> g_timestamp"
-  - docker build -t asia.gcr.io/inbound-theory-223505/central/spring-cloud-config-server:`cat g_timestamp` .
+  - docker build -t asia.gcr.io/inbound-theory-223505/bot-catalogs/central/spring-cloud-config-server:`cat g_timestamp` .
   artifacts:
     paths:
     - g_timestamp
@@ -27,14 +27,14 @@ build_docker_image:
 push_docker:
   stage: push_image
   script:
-  - gcloud docker -- push asia.gcr.io/inbound-theory-223505/central/spring-cloud-config-server
+  - gcloud docker -- push asia.gcr.io/inbound-theory-223505/bot-catalogs/central/spring-cloud-config-server
   only:
   - master
 
 clean_image:
   stage: clean_image
   script:
-  - docker images | grep asia.gcr.io/inbound-theory-223505/central/spring-cloud-config-server | awk '{ print $3 }' | uniq | awk 'NR > 2 { print }' | xargs -i docker rmi {} -f
+  - docker images | grep asia.gcr.io/inbound-theory-223505/bot-catalogs/central/spring-cloud-config-server | awk '{ print $3 }' | uniq | awk 'NR > 2 { print }' | xargs -i docker rmi {} -f
   allow_failure: true
   only:
   - master
