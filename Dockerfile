@@ -1,7 +1,7 @@
 FROM openjdk:8
 COPY . /project/
 WORKDIR /project/
-COPY /mvn-secret/settings.xml /root/.m2/
+COPY /home/gitlab-runner/mvn-secret/settings.xml /root/.m2/
 RUN ./mvnw package
 RUN ls /project/target/
 
