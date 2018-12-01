@@ -45,7 +45,7 @@ deploy:
   - export PATH=$PATH:/usr/lib/google-cloud-sdk/bin
   - echo `pwd`
   - gcloud container clusters get-credentials fullcowling --zone asia-southeast1-a --project inbound-theory-223505
-  - "sed -i -e \"s/TO_BE_REPLACE_TAG/`cat g_timestamp`/g\" deploy/beta-dep.yml"
+  - "sed -i -e \"s/TO_BE_REPLACE_TAG/`cat g_timestamp`/g\" src/main/deploy/beta-dep.yml"
   - kubectl apply -f src/main/deploy/beta-dep.yml
   - kubectl apply -f src/main/deploy/beta-svc.yml
   only:
