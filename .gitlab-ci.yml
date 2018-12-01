@@ -14,6 +14,8 @@ unittest:
 build_docker_image:
   stage: build_image
   script:
+  - mvn -N io.takari:maven:wrapper
+  - ./mvnw package
   - "echo $(date +%s) >> g_timestamp"
   - docker build -t asia.gcr.io/inbound-theory-223505/central/spring-cloud-config-server:`cat g_timestamp` .
   artifacts:
